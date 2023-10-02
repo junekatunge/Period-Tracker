@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Period Tracker Entry</title>
+</head>
+<body>
+    <h1>Add Period Tracker Entry</h1>
+    
+    <form method="POST" action="{% url 'add_period_tracker' %}">
+        {% csrf_token %}
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required>
+        <br>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required>
+        <br>
+
+        <label for="cycle_length">Cycle Length (in days):</label>
+        <input type="number" id="cycle_length" name="cycle_length" required>
+        <br>
+
+        <label for="mood_swings">Mood Swings:</label>
+        <input type="checkbox" id="mood_swings" name="mood_swings" value="true">
+        <br>
+
+        <label for="cramps">Cramps:</label>
+        <input type="checkbox" id="cramps" name="cramps"value="true">
+        <br>
+
+        <label for="breast_tenderness">Breast Tenderness:</label>
+        <input type="checkbox" id="breast_tenderness" name="breast_tenderness"value="true">
+        <br>
+
+        <label for="headaches">Headaches:</label>
+        <input type="checkbox" id="headaches" name="headaches"value="true">
+        <br>
+
+        <label for="back_pain">Back Pain:</label>
+        <input type="checkbox" id="back_pain" name="back_pain"value="true">
+        <br>
+
+        <label for="food_cravings">Food Cravings:</label>
+        <input type="checkbox" id="food_cravings" name="food_cravings"value="true">
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

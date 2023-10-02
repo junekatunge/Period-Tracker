@@ -12,7 +12,9 @@ class PeriodTracker(models.Model):
     headaches = models.BooleanField()
     back_pain = models.BooleanField()
     food_cravings = models.BooleanField()
+    next_period_start = models.DateField(null=True, blank=True)
+    ovulation_date = models.DateField(null=True, blank=True)
     
     def __str__(self):
-        return f'Period Tracker for {self.user}'
+        return f'Period Tracker for {self.user.username},{self.user.id}'
     

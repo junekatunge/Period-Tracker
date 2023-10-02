@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Period Tracker</title>
+    <!-- Add your CSS stylesheets and scripts here -->
+</head>
+<body>
+    <h1>View Period Tracker</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Cycle Length (days)</th>
+                <th>Mood Swings</th>
+                <th>Cramps</th>
+                <th>Breast Tenderness</th>
+                <th>Headaches</th>
+                <th>Back Pain</th>
+                <th>Food Cravings</th>
+                <th>Predicted Next Period</th>
+                <th>Ovulation Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in period_entries %}
+            <tr>
+                <td>{{ entry.start_date }}</td>
+                <td>{{ entry.end_date }}</td>
+                <td>{{ entry.cycle_length }}</td>
+                <td>{{ entry.mood_swings }}</td>
+                <td>{{ entry.cramps }}</td>
+                <td>{{ entry.breast_tenderness }}</td>
+                <td>{{ entry.headaches }}</td>
+                <td>{{ entry.back_pain }}</td>
+                <td>{{ entry.food_cravings }}</td>
+                <td>{{ entry.next_period_start }}</td>
+                <td>{{ entry.ovulation_date }}</td>
+                <td>
+                    <!-- Add Update and Delete buttons with links to the respective views -->
+                    <a href="{% url 'update_period_tracker' entry.id %}">Update</a>
+                    <a href="{% url 'delete_period_tracker' entry.id %}">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9">No period tracker entries found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add your JavaScript or additional content as needed -->
+
+</body>
+</html>

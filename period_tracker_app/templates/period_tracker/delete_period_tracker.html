@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Period Tracker Entry</title>
+    <!-- Add your CSS stylesheets and scripts here -->
+</head>
+<body>
+    <h1>Delete Period Tracker Entry</h1>
+
+    <p>Are you sure you want to delete this entry?</p>
+    <p>Start Date: {{ entry.start_date }}</p>
+    <!-- Add fields for other attributes here -->
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Delete Entry</button>
+    </form>
+
+    <!-- Add your JavaScript or additional content as needed -->
+
+</body>
+</html>
