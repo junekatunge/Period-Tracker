@@ -37,23 +37,29 @@ def add_period_tracker(request):
         )
         period_tracker.save()
         #calculate  and update the predicted next period and ovulation date
-        cycles = PeriodTracker.objects.filter(user=request.user).order_by('-start_date')[:2]
-        if len(cycles) == 2:
-            last_cycle = cycles[0]
-            previous_cycle = cycles[1]
-            cycle_length = (last_cycle.start_date - previous_cycle.start_date).days
-            predicted_next_start = last_cycle.start_date + timedelta(days=cycle_length)
-            last_cycle.next_period_start = predicted_next_start
+        # cycles = PeriodTracker.objects.filter(user=request.user).order_by('-start_date')[:2]
+        # if len(cycles) == 2:
+        #     last_cycle = cycles[0]
+        #     previous_cycle = cycles[1]
+        #     cycle_length = (last_cycle.start_date - previous_cycle.start_date).days
+        #     predicted_next_start = last_cycle.start_date + timedelta(days=cycle_length)
+        #     last_cycle.next_period_start = predicted_next_start
 
-            # Calculate the ovulation date (usually 14 days before the expected period).
-            ovulation_date = predicted_next_start - timedelta(days=14)
-            last_cycle.ovulation_date = ovulation_date
-            last_cycle.save()
+        #     # Calculate the ovulation date (usually 14 days before the expected period).
+        #     ovulation_date = predicted_next_start - timedelta(days=14)
+        #     last_cycle.ovulation_date = ovulation_date
+        #     last_cycle.save()
+        first_period_entry = PeriodTracker.objects.filter(user=request.user).order_by('start_date').first()
 
-    
-        return redirect(view_period_tracker)
-    else:
-        return render(request,'period_tracker/add_period_tracker.html')
+        if first_period_entry:
+        # Calculate the next period and ovulation date based on the first entry
+            first_period_entry.calculate_next_period_and_ovulation()
+            return redirect(view_period_tracker)  # Redirect to view page after calculation
+
+    return render(request,'period_tracker/add_period_tracker.html')  # Redirect even if no entry is found
+
+    # else:
+    #     return render(request,'period_tracker/add_period_tracker.html')
 
 def update_period_tracker(request,entry_id):
     entry = get_object_or_404(PeriodTracker,id=entry_id, user=request.user)
@@ -72,7 +78,7 @@ def update_period_tracker(request,entry_id):
         
         entry.save()
         
-        return redirect('view_period_tracker')  # Redirect to view page after updating
+        return redirect(view_period_tracker)  # Redirect to view page after updating
 
     context = {
         'entry': entry,
@@ -85,7 +91,7 @@ def delete_period_tracker(request, entry_id):
     
     if request.method == 'POST':
         entry.delete()
-        return redirect('view_period_tracker')  # Redirect to view page after deleting
+        return redirect(view_period_tracker)  # Redirect to view page after deleting
 
     context = {
         'entry': entry,
