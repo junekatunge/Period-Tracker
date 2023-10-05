@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Symptoms</title>
+</head>
+<body>
+    <h1>Log Your Symptoms</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+        <br>
+
+        <label>Symptoms:</label>
+        <br>
+        <input type="checkbox" id="mood_swings" name="symptoms" value="Mood Swings">
+        <label for="mood_swings">Mood Swings</label>
+        <br>
+
+        <input type="checkbox" id="cramps" name="symptoms" value="Cramps">
+        <label for="cramps">Cramps</label>
+        <br>
+
+        <input type="checkbox" id="headache" name="symptoms" value="Headache">
+        <label for="headache">Headache</label>
+        <br>
+
+        <input type="checkbox" id="backpain" name="symptoms" value="Back Pain">
+        <label for="backpain">Back Pain</label>
+        <br>
+
+        <input type="checkbox" id="food_cravings" name="symptoms" value="Food Cravings">
+        <label for="food_cravings">Food Cravings</label>
+        <br>
+
+        <input type="checkbox" id="vomiting" name="symptoms" value="Vomiting">
+        <label for="vomiting">Vomiting</label>
+        <br>
+
+        <input type="checkbox" id="irritation" name="symptoms" value="Irritation">
+        <label for="irritation">Irritation</label>
+        <br>
+
+        <input type="checkbox" id="spotting" name="symptoms" value="Spotting">
+        <label for="spotting">Spotting</label>
+        <br>
+
+        <label for="additional_info">Additional Information:</label>
+        <textarea id="additional_info" name="additional_info" rows="4" cols="50"></textarea>
+        <br>
+
+        <button type="submit">Log</button>
+    </form>
+</body>
+</html>

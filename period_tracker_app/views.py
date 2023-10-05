@@ -98,3 +98,23 @@ def delete_period_tracker(request, entry_id):
     }
 
     return render(request, 'period_tracker/delete_period_tracker.html', context)
+
+# view for loging in the daily symptoms
+
+def log_symptoms(request):
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        selected_symptoms = request.POST.getlist('symptoms')
+        additional_info = request.POST.get('additional_info','')
+        
+        for symptom in selected_symptoms:
+            SymptomLog.objects.create(
+                user=request.user,
+                date=date,
+                symptoms=symptom,
+                additional_info=additional_info
+            )
+        return redirect('view_symptom_logs')
+
+    return render(request, 'period_tracker/log_symptoms.html')
+        
