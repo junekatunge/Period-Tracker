@@ -145,6 +145,8 @@ def view_symptom_logs(request):
 #     return render(request, 'period_tracker/log_symptoms.html')
 def log_symptoms(request):
     if request.method == 'POST':
+        print(request.POST)
+        
         date = request.POST.get('date')
         additional_info = request.POST.get('additional_info', '')
 
@@ -154,6 +156,13 @@ def log_symptoms(request):
         # Set symptom values for selected symptoms to True
         existing_log.mood_swings = request.POST.get('mood_swings') == 'on'
         existing_log.cramps = request.POST.get('cramps') == 'on'
+        existing_log.headache = request.POST.get('headache') == 'on'
+        existing_log.backpain = request.POST.get('backpain') == 'on'
+        existing_log.food_cravings = request.POST.get('food_cravings') == 'on'
+        existing_log.vomiting = request.POST.get('vomiting') == 'on'
+        existing_log.irritation = request.POST.get('irritation') == 'on'
+        existing_log.spotting = request.POST.get('spotting') == 'on'
+    
         # Set values for other symptoms here
 
         existing_log.save()
