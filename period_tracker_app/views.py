@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from datetime import timedelta
 from django.db.models import Q
+from django.http import HttpResponse
+from datetime import datetime,timezone
+import pytz
 
 def view_period_tracker(request):
     period_entries = PeriodTracker.objects.filter(user=request.user).order_by('-start_date')
@@ -143,27 +146,34 @@ def view_symptom_logs(request):
 #         return redirect('view_symptom_logs')
 # # if you havent logged in the symptoms
 #     return render(request, 'period_tracker/log_symptoms.html')
+# 
+
+from django.utils import timezone
+
 def log_symptoms(request):
     if request.method == 'POST':
         print(request.POST)
-        
-        date = request.POST.get('date')
+        date_str = request.POST.get('date')
         additional_info = request.POST.get('additional_info', '')
+
+        # Convert the date string to a datetime object
+        date = timezone.make_aware(timezone.datetime.strptime(date_str, "%Y-%m-%d"))
+
+        # Check if the entered date is in the future
+        # today = timezone.now().date()
+        current_datetime = datetime.now(pytz.timezone('US/Eastern'))
+        if date > current_datetime:
+            return HttpResponse("Cannot log symptoms for future dates.")
 
         # Check if a symptom log entry for the specified date and user exists
         existing_log, created = SymptomLog.objects.get_or_create(date=date, user=request.user, defaults={'additional_info': additional_info})
 
-        # Set symptom values for selected symptoms to True
-        existing_log.mood_swings = request.POST.get('mood_swings') == 'on'
-        existing_log.cramps = request.POST.get('cramps') == 'on'
-        existing_log.headache = request.POST.get('headache') == 'on'
-        existing_log.backpain = request.POST.get('backpain') == 'on'
-        existing_log.food_cravings = request.POST.get('food_cravings') == 'on'
-        existing_log.vomiting = request.POST.get('vomiting') == 'on'
-        existing_log.irritation = request.POST.get('irritation') == 'on'
-        existing_log.spotting = request.POST.get('spotting') == 'on'
-    
-        # Set values for other symptoms here
+        # Define a list of symptom field names
+        symptom_fields = ['mood_swings', 'cramps', 'headache', 'backpain', 'food_cravings', 'vomiting', 'irritation', 'spotting']
+
+        # Loop through the symptom field names to set values to True or False
+        for field in symptom_fields:
+            setattr(existing_log, field, request.POST.get(field) == 'on')
 
         existing_log.save()
 
@@ -171,5 +181,6 @@ def log_symptoms(request):
 
     # If you haven't logged the symptoms, render the form
     return render(request, 'period_tracker/log_symptoms.html')
+
 
         
