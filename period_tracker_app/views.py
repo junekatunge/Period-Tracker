@@ -40,19 +40,7 @@ def add_period_tracker(request):
             food_cravings=food_cravings,
         )
         period_tracker.save()
-        #calculate  and update the predicted next period and ovulation date
-        # cycles = PeriodTracker.objects.filter(user=request.user).order_by('-start_date')[:2]
-        # if len(cycles) == 2:
-        #     last_cycle = cycles[0]
-        #     previous_cycle = cycles[1]
-        #     cycle_length = (last_cycle.start_date - previous_cycle.start_date).days
-        #     predicted_next_start = last_cycle.start_date + timedelta(days=cycle_length)
-        #     last_cycle.next_period_start = predicted_next_start
-
-        #     # Calculate the ovulation date (usually 14 days before the expected period).
-        #     ovulation_date = predicted_next_start - timedelta(days=14)
-        #     last_cycle.ovulation_date = ovulation_date
-        #     last_cycle.save()
+      
         first_period_entry = PeriodTracker.objects.filter(user=request.user).order_by('start_date').first()
 
         if first_period_entry:
@@ -62,8 +50,7 @@ def add_period_tracker(request):
 
     return render(request,'period_tracker/add_period_tracker.html')  # Redirect even if no entry is found
 
-    # else:
-    #     return render(request,'period_tracker/add_period_tracker.html')
+ 
 
 def update_period_tracker(request,entry_id):
     entry = get_object_or_404(PeriodTracker,id=entry_id, user=request.user)
@@ -109,47 +96,9 @@ def view_symptom_logs(request):
     symptom_logs = SymptomLog.objects.filter(user=request.user).order_by('-date')
     return render(request,'period_tracker/view_symptom_logs.html',{'symptom_logs': symptom_logs})
     
-# view for loging in the daily symptoms
-# def log_symptoms(request):
-#     if request.method == 'POST':
-#         date = request.POST.get('date')
-#         additional_info = request.POST.get('additional_info','')
-        
-#         # Check if a symptom log entry for the specified date and user exists
-#         existing_log = SymptomLog.objects.filter(date=date, user=request.user).first()
-        
-#         #get the selected symptoms from the request
-#         selected_symptoms = {
-#             'mood_swings': request.POST.get('mood_swings') == 'on',
-#             'cramps': request.POST.get('cramps') == 'on',
-#             'headache': request.POST.get('headache') == 'on',
-#             'backpain': request.POST.get('backpain') == 'on',
-#             'food_cravings': request.POST.get('food_cravings') == 'on',
-#             'vomiting': request.POST.get('vomiting') == 'on',
-#             'irritation': request.POST.get('irritation') == 'on',
-#             'spotting': request.POST.get('spotting') == 'on',
-#         }
-        
-#         if existing_log:
-#             # Update the existing log entry
-#             existing_log.additional_info = additional_info
-#             for symptom_name, symptom_value in selected_symptoms.items():
-#                 setattr(existing_log, symptom_name, symptom_value)
-#             existing_log.save()
-#         else:
-#             # Create a new log entry
-#             log = SymptomLog(user=request.user, date=date, additional_info=additional_info)
-#             for symptom_name, symptom_value in selected_symptoms.items():
-#                 setattr(log, symptom_name, symptom_value)
-#             log.save()
-
-#         return redirect('view_symptom_logs')
-# # if you havent logged in the symptoms
-#     return render(request, 'period_tracker/log_symptoms.html')
-# 
-
 from django.utils import timezone
 
+# log symptoms
 def log_symptoms(request):
     if request.method == 'POST':
         print(request.POST)
@@ -175,6 +124,7 @@ def log_symptoms(request):
         for field in symptom_fields:
             setattr(existing_log, field, request.POST.get(field) == 'on')
 
+        existing_log.additional_info = additional_info
         existing_log.save()
 
         return redirect('view_symptom_logs')
