@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Symptom Logs</title>
+</head>
+<body>
+    <h1>Your Symptom Logs</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Mood Swings</th>
+                <th>Cramps</th>
+                <th>Headache</th>
+                <th>Back Pain</th>
+                <th>Food Cravings</th>
+                <th>Vomiting</th>
+                <th>Irritation</th>
+                <th>Spotting</th>
+                <th>Additional Info</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in symptom_logs %}
+            <tr>
+                <td>{{ log.date }}</td>
+                <td>{{ log.mood_swings }}</td>
+                <td>{{ log.cramps }}</td>
+                <td>{{ log.headache }}</td>
+                <td>{{ log.backpain }}</td>
+                <td>{{ log.food_cravings }}</td>
+                <td>{{ log.vomiting }}</td>
+                <td>{{ log.irritation }}</td>
+                <td>{{ log.spotting }}</td>
+                <td>
+                    {% if log.additional_info %}
+                        {{ log.additional_info }}
+                    {% else %}
+                        No additional info
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10">No symptom logs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'log_symptoms' %}">Log New Symptoms</a>
+
+</body>
+</html>

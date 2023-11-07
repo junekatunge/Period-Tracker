@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from datetime import timedelta
+from django.db.models import Q
 
 def view_period_tracker(request):
     period_entries = PeriodTracker.objects.filter(user=request.user).order_by('-start_date')
@@ -103,23 +104,63 @@ def delete_period_tracker(request, entry_id):
 # view for viewing the logged daily symptoms
 def view_symptom_logs(request):
     symptom_logs = SymptomLog.objects.filter(user=request.user).order_by('-date')
-    return render(request,'period_tracker/view_sympton_logs.html',{'symptom_logs':symptom_logs})
+    return render(request,'period_tracker/view_symptom_logs.html',{'symptom_logs': symptom_logs})
     
 # view for loging in the daily symptoms
+# def log_symptoms(request):
+#     if request.method == 'POST':
+#         date = request.POST.get('date')
+#         additional_info = request.POST.get('additional_info','')
+        
+#         # Check if a symptom log entry for the specified date and user exists
+#         existing_log = SymptomLog.objects.filter(date=date, user=request.user).first()
+        
+#         #get the selected symptoms from the request
+#         selected_symptoms = {
+#             'mood_swings': request.POST.get('mood_swings') == 'on',
+#             'cramps': request.POST.get('cramps') == 'on',
+#             'headache': request.POST.get('headache') == 'on',
+#             'backpain': request.POST.get('backpain') == 'on',
+#             'food_cravings': request.POST.get('food_cravings') == 'on',
+#             'vomiting': request.POST.get('vomiting') == 'on',
+#             'irritation': request.POST.get('irritation') == 'on',
+#             'spotting': request.POST.get('spotting') == 'on',
+#         }
+        
+#         if existing_log:
+#             # Update the existing log entry
+#             existing_log.additional_info = additional_info
+#             for symptom_name, symptom_value in selected_symptoms.items():
+#                 setattr(existing_log, symptom_name, symptom_value)
+#             existing_log.save()
+#         else:
+#             # Create a new log entry
+#             log = SymptomLog(user=request.user, date=date, additional_info=additional_info)
+#             for symptom_name, symptom_value in selected_symptoms.items():
+#                 setattr(log, symptom_name, symptom_value)
+#             log.save()
+
+#         return redirect('view_symptom_logs')
+# # if you havent logged in the symptoms
+#     return render(request, 'period_tracker/log_symptoms.html')
 def log_symptoms(request):
     if request.method == 'POST':
         date = request.POST.get('date')
-        selected_symptoms = request.POST.getlist('symptoms')
-        additional_info = request.POST.get('additional_info','')
-        
-        for symptom in selected_symptoms:
-            SymptomLog.objects.create(
-                user=request.user,
-                date=date,
-                symptoms=symptom,
-                additional_info=additional_info
-            )
+        additional_info = request.POST.get('additional_info', '')
+
+        # Check if a symptom log entry for the specified date and user exists
+        existing_log, created = SymptomLog.objects.get_or_create(date=date, user=request.user, defaults={'additional_info': additional_info})
+
+        # Set symptom values for selected symptoms to True
+        existing_log.mood_swings = request.POST.get('mood_swings') == 'on'
+        existing_log.cramps = request.POST.get('cramps') == 'on'
+        # Set values for other symptoms here
+
+        existing_log.save()
+
         return redirect('view_symptom_logs')
-# if you havent logged in the symptoms
+
+    # If you haven't logged the symptoms, render the form
     return render(request, 'period_tracker/log_symptoms.html')
+
         
